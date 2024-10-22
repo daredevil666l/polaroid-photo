@@ -1,0 +1,94 @@
+body {
+    background: linear-gradient(135deg, #f3f3f3, #e1e1e1);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+input[type="file"] {
+    display: block;
+    margin: 0 auto 20px;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    cursor: pointer;
+}
+
+.polaroid {
+    display: inline-block;
+    margin: 20px;
+    text-align: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    transition: transform 0.3s ease;
+}
+
+.polaroid:hover {
+    transform: scale(1.05);
+}
+
+/* Устанавливаем максимальные размеры для отображаемого изображения */
+.polaroid canvas {
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Стиль кнопки скачивания */
+.download-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.download-btn:hover {
+    background: #45a049;
+}
+
+/* Стиль для заголовка и области загрузки */
+.upload-section {
+    margin-bottom: 20px;
+}
+
+/* Анимация при наведении */
+.download-btn,
+input[type="file"] {
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+input[type="file"]:hover,
+.download-btn:hover {
+    background: #ececec;
+    transform: translateY(-2px);
+}
