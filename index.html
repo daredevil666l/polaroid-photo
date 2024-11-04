@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polaroid Generator</title>
+    <title>Проявочная</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Мягкий градиентный фон */
+        /* Динамичный градиентный фон */
         .gradient-bg {
-            background: linear-gradient(135deg, #f8fbff, #e3f6f5, #d3e0dc);
-            background-size: cover;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b, #ff7e5f);
+            background-size: 400% 400%;
             animation: gradientShift 10s ease infinite;
         }
 
@@ -38,6 +38,16 @@
             100% { transform: translateY(0px); }
         }
 
+        /* Анимация появления заголовка */
+        .fade-in {
+            animation: fadeIn 2s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
         /* Мягкая тень и округленные углы для полароидов */
         .polaroid-card {
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -60,40 +70,78 @@
 
         /* Пастельный стиль кнопок */
         .btn-pastel {
-            background: #a0e7e5;
+            background: #ff7e5f;
             color: #fff;
             padding: 8px 16px;
             font-family: 'Nunito', sans-serif;
             text-align: center;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(160, 231, 229, 0.4);
+            box-shadow: 0 4px 10px rgba(255, 126, 95, 0.4);
             transition: all 0.3s ease;
         }
 
         .btn-pastel:hover {
-            background: #b4f1f0;
-            box-shadow: 0 6px 15px rgba(160, 231, 229, 0.6);
+            background: #feb47b;
+            box-shadow: 0 6px 15px rgba(255, 126, 95, 0.6);
             transform: scale(1.05);
         }
 
         /* Стиль зоны загрузки */
         .upload-zone {
-            border-color: #a0e7e5;
+            border-color: #ff7e5f;
             background-color: rgba(255, 255, 255, 0.6);
             border-radius: 12px;
         }
 
         .upload-zone:hover {
             background-color: rgba(245, 245, 245, 0.9);
-            border-color: #b4f1f0;
+            border-color: #feb47b;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
     <div class="max-w-4xl mx-auto p-6">
         <!-- Заголовок -->
-        <h1 class="custom-font text-5xl text-center mb-8 float">
-            Polaroid Generator
+        <h1 class="custom-font text-5xl text-center mb-8 float fade-in">
+            Проявочная
         </h1>
         
         <!-- Основной контейнер -->
@@ -104,15 +152,15 @@
                 <label for="upload" class="cursor-pointer block">
                     <div class="flex flex-col items-center gap-4 group-hover:scale-105 transition-transform">
                         <!-- Иконка загрузки в пастельных тонах -->
-                        <div class="w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-r from-cyan-300 to-blue-300 shadow-lg">
+                        <div class="w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-r from-pink-300 to-yellow-300 shadow-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                             </svg>
                         </div>
-                        <p class="text-lg font-medium text-gray-700 group-hover:text-cyan-600 transition-colors">
+                        <p class="text-lg font-medium text-gray-700 group-hover:text-pink-600 transition-colors">
                             Нажмите или перетащите сюда фотографии
                         </p>
-                        <p class="text-xs text-gray-500 group-hover:text-cyan-500 transition-colors">
+                        <p class="text-xs text-gray-500 group-hover:text-pink-500 transition-colors">
                             Поддерживаются форматы JPG, PNG, GIF
                         </p>
                     </div>
@@ -124,25 +172,42 @@
         </div>
     </div>
 
+    <!-- Модальное окно -->
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="text-2xl font-bold mb-4">Выберите фильтр</h2>
+            <div class="flex flex-wrap gap-4">
+                <button data-filter="none" class="btn-pastel">Без фильтра</button>
+                <button data-filter="sepia" class="btn-pastel">Сепия</button>
+                <button data-filter="grayscale" class="btn-pastel">Ч/Б</button>
+                <button data-filter="invert" class="btn-pastel">Инверсия</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const uploadZone = document.getElementById('upload-zone');
         const fileInput = document.getElementById('upload');
-        
+        const modal = document.getElementById('filterModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+        let currentFile = null;
+
         uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadZone.classList.add('bg-cyan-50');
+            uploadZone.classList.add('bg-pink-50');
             uploadZone.classList.add('scale-105');
         });
 
         uploadZone.addEventListener('dragleave', (e) => {
             e.preventDefault();
-            uploadZone.classList.remove('bg-cyan-50');
+            uploadZone.classList.remove('bg-pink-50');
             uploadZone.classList.remove('scale-105');
         });
 
         uploadZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadZone.classList.remove('bg-cyan-50');
+            uploadZone.classList.remove('bg-pink-50');
             uploadZone.classList.remove('scale-105');
             handleFiles(e.dataTransfer.files);
         });
@@ -150,18 +215,39 @@
         fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
         function handleFiles(files) {
-            const gallery = document.getElementById('gallery');
-            
             Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    createPolaroidElement(e.target.result, gallery);
-                };
-                reader.readAsDataURL(file);
+                currentFile = file;
+                modal.style.display = "block";
             });
         }
 
-        function createPolaroidElement(src, gallery) {
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        document.querySelectorAll('.modal-content button').forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+                applyFilter(currentFile, filter);
+                modal.style.display = "none";
+            });
+        });
+
+        function applyFilter(file, filter) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                createPolaroidElement(e.target.result, filter);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function createPolaroidElement(src, filter) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const scaleFactor = 3;
@@ -188,6 +274,22 @@
 
                 ctx.drawImage(img, sx, sy, minSize, minSize, offsetX, offsetY, photoWidth, photoHeight);
 
+                switch (filter) {
+                    case 'sepia':
+                        ctx.filter = 'sepia(100%)';
+                        break;
+                    case 'grayscale':
+                        ctx.filter = 'grayscale(100%)';
+                        break;
+                    case 'invert':
+                        ctx.filter = 'invert(100%)';
+                        break;
+                    default:
+                        ctx.filter = 'none';
+                }
+
+                ctx.drawImage(img, sx, sy, minSize, minSize, offsetX, offsetY, photoWidth, photoHeight);
+
                 const polaroidDiv = document.createElement('div');
                 polaroidDiv.className = 'rotate-hover bg-white p-4 polaroid-card opacity-0 transform translate-y-4';
                 
@@ -203,6 +305,7 @@
                 downloadBtn.innerHTML = `Скачать`;
                 polaroidDiv.appendChild(downloadBtn);
                 
+                const gallery = document.getElementById('gallery');
                 gallery.appendChild(polaroidDiv);
 
                 setTimeout(() => {
